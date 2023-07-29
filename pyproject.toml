@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "langchain-stuff"
+version = "0.1.0"
+description = ""
+authors = ["Wazarr94 <jeje_04@live.com>"]
+readme = "README.md"
+packages = [{ include = "langchain_stuff" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+langchain = "^0.0.247"
+streamlit = "^1.25.0"
+torch = { url = "https://download.pytorch.org/whl/cu118/torch-2.0.1%2Bcu118-cp310-cp310-linux_x86_64.whl" }
+huggingface-hub = "^0.16.4"
+transformers = "^4.31.0"
+sentence-transformers = "^2.2.2"
+pydantic = "<2"
+python-dotenv = "^1.0.0"
+accelerate = "^0.21.0"
+bitsandbytes = "^0.41.0"
+
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+select = ["E", "F", "W", "I"]
+ignore = ["E501", "W293"]
+
+fixable = ["ALL"]
+unfixable = ["F401", "F841"]
