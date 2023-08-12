@@ -12,6 +12,8 @@ from transformers import (
 
 from langchain_stuff.utils import project_path
 
+USE_CACHE = False
+
 
 class Role(str, Enum):
     USER = "user"
@@ -27,7 +29,7 @@ class ChatMessage:
 @st.cache_resource
 def get_llm_chain():
     # Load model
-    cache_dir = project_path / "models"
+    cache_dir = project_path / "models" if USE_CACHE else None
     model_id = "google/flan-t5-large"
     tokenizer = AutoTokenizer.from_pretrained(model_id, cache_dir=cache_dir)
     model = AutoModelForSeq2SeqLM.from_pretrained(
@@ -66,15 +68,22 @@ def main():
     llm_chain = st.session_state["chain"]
     conversation = st.session_state["conversation"]
 
-    prompt = st.chat_input("User: ", key="prompt")
-    if prompt:
-        conversation.append(ChatMessage(role=Role.USER, content=prompt))
-        response = llm_chain(prompt)
-        conversation.append(ChatMessage(role=Role.BOT, content=response["text"]))
-
     for message in conversation:
         with st.chat_message(message.role.value):
             st.write(message.content)
+
+    prompt = st.chat_input("User: ", key="prompt")
+    if prompt:
+        message_user = ChatMessage(role=Role.USER, content=prompt)
+        conversation.append(message_user)
+        with st.chat_message(Role.USER.value):
+            st.write(message_user.content)
+
+        response = llm_chain(prompt)
+        message_bot = ChatMessage(role=Role.BOT, content=response["text"])
+        conversation.append(message_bot)
+        with st.chat_message(Role.BOT.value):
+            st.write(message_bot.content)
 
     st.write()
 
